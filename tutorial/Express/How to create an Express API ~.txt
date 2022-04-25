@@ -1,0 +1,74 @@
+cd myapi
+npm install express
+-> Will Create Package JSON Files and node_modules
+
+# To helps us decode the body from an HTTP request
+npm install --save body-parser
+
+# CORS = cross-origin resource sharing
+npm install --save cors
+
+# For Quick Restart in Development
+npm install nodemon
+
+-> To add in package.json :
+
+  "scripts": {
+    "start": "node index",
+    "dev": "nodemon index"
+  },
+
+  "npm start" in project directory will start the API in normal node_modules
+  "npm run dev" will start the api with nodeman and enable quick restart when modified
+
+-> Next Steap : Create index.js :
+
+const express = require('express')
+const app = express()
+const bodyParser = require('body-parser')
+const cors = require('cors');
+
+app.use(cors());
+app.use(bodyParser.json({ limit: "50mb" }))
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 }))
+
+app.get('/', (req,res) => {
+    res.send("Hello World")
+})
+
+app.listen(8080, () => {
+    console.log("Server is Listenning")
+  })
+
+
+# WITH MONGODB :
+
+add in index js :
+
+const MongoClient = require('mongodb').MongoClient;
+const url = 'mongodb://localhost:27017';
+const dbName = 'parkingApi';
+let db
+ 
+MongoClient.connect(url, function(err, client) {
+  console.log("Connected successfully to server");
+  db = client.db(dbName);
+});
+
+app.get('/parkings/:id', (req,res) => {
+    const id = parseInt(req.params.id)
+    const parking = parkings.find(parking => parking.id === id)
+    res.status(200).json(parking)
+})
+
+
+
+
+
+
+
+
+
+
+
+

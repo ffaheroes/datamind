@@ -1,0 +1,73 @@
+
+
+
+
+
+
+C:\tmp>npm init gatsby
+Need to install the following packages:
+  create-gatsby
+Ok to proceed? (y) y
+create-gatsby version 2.9.0
+
+
+
+                                                   Welcome to Gatsby!
+
+
+
+This command will generate a new Gatsby site for you in C:\tmp with the setup you select. Let's answer some questions:
+
+
+What would you like to call your site?
+√ · datamind
+What would you like to name the folder where your site will be created?
+√ tmp/ datamind
+√ Will you be using JavaScript or TypeScript?
+· JavaScript
+√ Will you be using a CMS?
+· No (or I'll add it later)
+√ Would you like to install a styling system?
+· No (or I'll add it later)
+√ Would you like to install additional features with other plugins?
+· Add the Google Analytics tracking script
+
+Great! A few of the selections you made need to be configured. Please fill in the options for each plugin now:
+
+√ Configure the gatsby-plugin-google-analytics plugin.
+See https://www.gatsbyjs.com/plugins/gatsby-plugin-google-analytics/ for help.
+
+
+Thanks! Here's what we'll now do:
+
+    Create a new Gatsby site in the folder datamind
+    Install gatsby-plugin-google-analytics
+
+√ Shall we do this? (Y/n) · Yes
+√ Created site from template
+> Installing Gatsby...
+[##################] \ reify:@parcel/transformer-js: http fetch GET 200 https://registry.npmjs.org/@parcel/transformer-
+
+
+√ Installed Gatsby
+√ Installed plugins
+√ Created site in datamind
+Setting-up plugins...
+info Adding gatsby-plugin-google-analytics
+info Installed gatsby-plugin-google-analytics in gatsby-config.js
+success Adding gatsby-plugin-google-analytics to gatsby-config - 0.146s
+Your new Gatsby site  has been successfully created
+at C:\tmp\datamind.
+Start by going to the directory with
+
+  cd datamind
+
+Start the local development server with
+
+  npm run develop
+
+See all commands at
+
+  https://www.gatsbyjs.com/docs/gatsby-cli/
+
+

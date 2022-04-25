@@ -1,0 +1,100 @@
+
+input {
+  outline: 0;
+  padding : 10px;
+  border-width: 0 0 1px;
+  border-color: blue
+}
+input:focus {
+  border-width: 0 0 2px;
+}
+
+.modal-header {
+  // ..
+  height:30px;
+}
+
+.post-meta {
+  margin: 0 auto;
+  padding: 0 0px;
+  max-width: 740px;
+
+  .post-tags {
+    padding: 0 20px;
+  }
+
+  .user-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+
+
+
+    .user-block {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-direction: row;
+    }
+
+    .author {
+      padding: 0 20px;
+      padding-left: 15px;
+      font-size: 16px;
+      line-height: 20px;
+    }
+
+  
+  
+  }
+}
+
+.series {
+  border: 1px solid green;
+  border-radius: 5px;
+  height:40px;
+  width:150px;
+  margin : 10px;
+  padding: 5px;
+}  
+
+.post-actions {
+  margin: 0 auto;
+  padding: 0 20px 20px;
+  max-width: 740px;
+  border-top: 1px solid var(--color-devider-light_gray);
+  padding-top: 25px;
+  padding-bottom: 25px;
+
+  :global(.btn) {
+    margin-right: 11px;
+  }
+
+  .cancel {
+    font-size: 16px;
+    color: var(--color-font-secondary);
+  }
+
+  .delete {
+    padding-top: 8px;
+    font-size: 16px;
+    color:red;
+    float : right;
+  }
+
+}
+
+@media (min-width: 768px) {
+  .post-meta {
+    .user-info {
+      padding-top: 35px;
+      padding-bottom: 35px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+}

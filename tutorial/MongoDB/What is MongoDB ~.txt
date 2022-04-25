@@ -1,0 +1,9 @@
+MongoDB is a NoSQL DB. 
+It's a document oriented database that use Json Like document.
+
+Typical Structures : 
+
+- Database
+    - Collection
+        - Documents
+    
