@@ -51,12 +51,14 @@ router.post('/login', async (req,res) => {
 
     // Checking if the email exists
     const userExist = await db.collection('author').find({ username: req.body.username }).toArray()
-    console.log(userExist)
+    console.log('Login -> user exists')
     if (userExist==[]) return res.status(400).send({'email' : 'Email does not exists'});
     
     // Checking passwords
     const validPass = await bcrypt.compare(req.body.password,userExist[0].passwordHash);
     if(!validPass) return res.status(400).send({'password' : 'Invalid password'})
+    console.log('Login -> password is valid')
+
 
     // Create and assign a token
     const token = jwt.sign({ _id : userExist[0]._id }, 'wsfbgkjhsdfkjsjdfoi')
@@ -67,7 +69,7 @@ router.post('/login', async (req,res) => {
     post.map((p) => series.push(p.series))
     uniqSeries = [...new Set(series)].filter(Boolean); // Cool Stuff ! SET to remove duplicate from array, Filter boolean to remove unefined and nan
 
-    res.header('token',token).send({'token' : token, 'user_id' : userExist[0]._id, 'username' : userExist[0].username,'avatarUrl' : userExist[0].avatarUrl,'series' : uniqSeries});
+    res.header('token',token).send({'token' : token, 'user_id' : userExist[0]._id, 'username' : userExist[0].username,'avatarUrl' : userExist[0].avatarUrl,'series' : uniqSeries,'bio' : userExist[0].bio,'links' : userExist[0].links});
 });
 
 router.post('/logout', async (req,res) => {

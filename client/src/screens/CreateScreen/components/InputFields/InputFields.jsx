@@ -4,18 +4,12 @@ import PropTypes from 'prop-types';
 import styles from './InputFields.module.scss';
 
 const InputFields = ({ inputData, onInputChange, onCheckboxChange }) => {
-  const { title, subTitle, imgDescriptor, isLargePreview } = inputData;
+  const { title, subTitle, imgDescriptor} = inputData;
 
   return (
     <div className={styles['input-fields']}>
       <div>
         <input type="text" className={styles['img-url']} name="imgDescriptor" placeholder="Image descriptor for url" value={imgDescriptor} onChange={onInputChange} />
-      </div>
-      <div className={styles['is-large-preview']}>
-        <label>
-          <input type="checkbox" checked={isLargePreview} onChange={onCheckboxChange} />
-          Enable large preview
-        </label>
       </div>
       <div>
         <input type="text" className={styles.title} name="title" placeholder="Title" value={title} onChange={onInputChange} />
@@ -25,12 +19,6 @@ const InputFields = ({ inputData, onInputChange, onCheckboxChange }) => {
       </div>
     </div>
   );
-};
-
-InputFields.propTypes = {
-  inputData: PropTypes.object.isRequired,
-  onInputChange: PropTypes.func.isRequired,
-  onCheckboxChange: PropTypes.func.isRequired,
 };
 
 export default InputFields;

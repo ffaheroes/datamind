@@ -15,6 +15,16 @@ const BlogScreen = Loadable({
   loading: Spinner,
 });
 
+const ProfileScreen = Loadable({
+  loader: () => import('./screens/ProfileScreen/ProfileScreen'),
+  loading: Spinner,
+});
+
+const ProfileEditScreen = Loadable({
+  loader: () => import('./screens/BlogScreen/BlogScreen'),
+  loading: Spinner,
+});
+
 const PostViewScreen = Loadable({
   loader: () => import('./screens/PostViewScreen/PostViewScreen'),
   loading: Spinner,
@@ -51,6 +61,8 @@ const App = () => {
         <Routes>
           <Route path="/blogs/:blogId/posts/:postId/edit" element={<PostEditScreen/>} />
           <Route path="/blogs/1/posts/:postId" element={<PostViewScreen/>}/>
+          <Route path="/blogs/:blogName/edit" element={<ProfileEditScreen/>} />
+          <Route path="/blogs/:blogName" element={<ProfileScreen/>}/>
           <Route path="/" element ={<BlogScreen/>} />
           <Route path="/register" element={<RegisterScreen/>} />
           <Route path="/create" element={<CreateScreen/>} />

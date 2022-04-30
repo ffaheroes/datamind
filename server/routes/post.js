@@ -44,6 +44,20 @@ router.get('/:_id', async (req, res) => {
   });
 
 
+  router.get('/getpostbyuserid/:id', async (req, res) => {
+    var user_id = req.params.id;       
+    console.log('get getpostbyuserid/',user_id)
+    try {
+        const post = await db.collection('post').find({userId:user_id}).toArray()
+        res.status(200).json(post)
+    } catch (err) {
+        console.log(err)
+        throw err
+    }
+  });
+
+
+
   router.get('/related/:_id', async (req, res) => {
     console.log('get post/series')
     var id = req.params._id;       
