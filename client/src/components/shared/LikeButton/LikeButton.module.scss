@@ -1,8 +1,8 @@
 
 .like-button-circle{
     border-radius: 50%;
-    height : 40px;
-    width : 40px;
+    height : 30px;
+    width : 30px;
     will-change: background-color;
     transition: background-color 0.3s, transform 0.3s;
     background-color: white;
@@ -13,8 +13,8 @@
 
 .like-button-circle-liked{
     border-radius: 50%;
-    height : 40px;
-    width : 40px;
+    height : 30px;
+    width : 30px;
     will-change: background-color;
     transition: background-color 0.3s, transform 0.3s;
     background-color: crimson;

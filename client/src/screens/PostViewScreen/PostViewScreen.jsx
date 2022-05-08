@@ -32,6 +32,7 @@ const PostViewScreen = () => {
   const [enableChange, setEnableChange] = useState(false);
   const [relatedSeries, setRelatedSeries] = useState([]);
   const [liked, setLiked] = useState(false);
+  const [nblike, setNblike] = useState(null);
 
   useEffect(() => {
     async function get_posts() {
@@ -64,6 +65,8 @@ const PostViewScreen = () => {
           let thispost = results[1][0]
           console.log('thispost',thispost)
 
+          setNblike(thispost.metrics.like.length)
+
           if (authState.isLoggedIn) {
             console.log('auth is logged')
             // Authorize change
@@ -71,6 +74,7 @@ const PostViewScreen = () => {
               console.log('user is author')
               setEnableChange(true)
             }
+
             // Set Color of Likes
             if (thispost.metrics.like) {
               thispost.metrics.like.map((item) => {
@@ -144,6 +148,8 @@ const PostViewScreen = () => {
     
     if (!liked) {
 
+      setNblike(nblike+1)
+
       console.log(post.metrics.like)
       if (!post.metrics.like){
         var list_like = [{user_id : authState.authdata.user_id, username: authState.authdata.username,timestamps : new Date()}]
@@ -174,6 +180,7 @@ const PostViewScreen = () => {
       post.metrics.like.map((item) => { 
         console.log('map item',item) // CHECK IF USER CURENTLY LOGGED IS IN LIST OF LIKES
         if (item.user_id==authState.authdata.user_id){ // USER IS LIST OF LIKES
+          setNblike(nblike-1)
           console.log('user Unlike, rest = ',post.metrics.like.filter((it)=> it.username !==authState.authdata.username ))
           fetch(`http://127.0.0.1:8080/api/post/like/`+ postId , { // POST QUERY TON UNLIKE/REMOVE THE USER
             method: 'PATCH',
@@ -227,6 +234,7 @@ const PostViewScreen = () => {
             <PostText post={post}/>
 
             <LikeButton liked={liked} 
+                        nblike={nblike}
                         onLikedChange={handleLikedChange}/>
 
 
