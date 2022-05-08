@@ -20,6 +20,24 @@ const PostPreview2 = ({ post, author }) => {
     }
   }, []);
 
+  
+  const handleswitch = (post,visible) => {
+
+    console.log('handleswich',post,visible)
+
+    fetch(`http://127.0.0.1:8080/api/post/visible/`+ post , {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        visible : visible
+      }),
+    })
+      .then(() => { console.log('series');});
+
+  }
+
 
   return (
   <header className={styles['post-header']}>
@@ -30,14 +48,15 @@ const PostPreview2 = ({ post, author }) => {
       </Link>
         <span className={styles['post-profile']}>
 
-          { enableChange 
+          { enableChange
           ?
-          <div>
-              <Switch defaultChecked size="small"/>
-          </div>
+            post.visible
+            ?
+            <div><Switch defaultChecked size="small" onClick={(e) => handleswitch(post._id,e.target.checked)}/></div>
+            :
+            <div><Switch size="small" onClick={(e) => handleswitch(post._id,e.target.checked)}/></div>
           :
           <div>
-              <Switch disabled defaultChecked size="small"/>
           </div>
           }
 

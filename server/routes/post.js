@@ -16,11 +16,24 @@ MongoClient.connect(url, function(err, client) {
   db = client.db(dbName);
 });
 
+
 router.get('/', async (req,res) => {
     console.log('get post/')
     // const id = parseInt(req.params.id)
     try {
         const post = await db.collection('post').find({}).toArray()
+        res.status(200).json(post)
+    } catch (err) {
+        console.log(err)
+        throw err
+    }
+});
+
+router.get('/livepost', async (req,res) => {
+    console.log('get livepost/')
+    // const id = parseInt(req.params.id)
+    try {
+        const post = await db.collection('post').find({visible:true}).toArray()
         res.status(200).json(post)
     } catch (err) {
         console.log(err)
@@ -91,9 +104,12 @@ router.get('/:_id', async (req, res) => {
     let title = req.body.title;
     let subTitle = req.body.subTitle;
     let contentMarkup = req.body.contentMarkup;
-    let isLargePreview = req.body.isLargePreview;
     let imgDescriptor = req.body.imgDescriptor;
     let tags = req.body.tags
+    let visible = req.body.visible
+
+    console.log(contentMarkup)
+
 
     const now = new Date();
     months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
@@ -106,7 +122,7 @@ router.get('/:_id', async (req, res) => {
             {$set: {"title": title,
                     "subTitle" : subTitle,
                     "contentMarkup" : contentMarkup,
-                    "isLargePreview" : isLargePreview,
+                    "visible" : visible,
                     "imgDescriptor" : imgDescriptor,
                     "date" : date,
                     "tags" : tags}}, // Update
@@ -130,6 +146,47 @@ router.get('/:_id', async (req, res) => {
         const post = await db.collection('post').updateOne(
             {_id:o_id}, // Filter
             {$set: {"series": series}}, // Update
+            {upsert: true} // add document with req.body._id if not exists 
+        )
+        res.status(200).json(post)
+    } catch (err) {
+        console.log(err)
+        throw err
+    }
+  });
+
+  router.patch('/like/:_id', async (req, res) => {
+    console.log('patch like ')
+    console.log(req.body)
+    var id = req.params._id;       
+    var o_id = new ObjectId(id);
+    let user_id = req.body.user_id;
+    let username = req.body.username;
+
+    try {
+        const post = await db.collection('post').updateOne(
+            {_id:o_id}, // Filter
+            {$set: {"metrics": req.body}}, // Update
+            {upsert: true} // add document with req.body._id if not exists 
+        )
+        res.status(200).json(post)
+    } catch (err) {
+        console.log(err)
+        throw err
+    }
+  });
+
+  router.patch('/visible/:_id', async (req, res) => {
+
+    var id = req.params._id;       
+    console.log('patch visible ',id)
+    var o_id = new ObjectId(id);
+    let visible = req.body.visible;
+
+    try {
+        const post = await db.collection('post').updateOne(
+            {_id:o_id}, // Filter
+            {$set: {"visible": visible}}, // Update
             {upsert: true} // add document with req.body._id if not exists 
         )
         res.status(200).json(post)
@@ -164,7 +221,6 @@ router.get('/:_id', async (req, res) => {
     let title = req.body.title;
     let subTitle = req.body.subTitle;
     let contentMarkup = req.body.contentMarkup;
-    let isLargePreview = req.body.isLargePreview;
     if (req.body.imgDescriptor==='') {
         var imgDescriptor = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsqQAWml86qP_eNqc-H-WTJkSaQKpPY42AOnD_oxmN1zC6ZUq3F67OjIJQURq0dSp31Us&usqp=CAU'
     } else {
@@ -175,6 +231,7 @@ router.get('/:_id', async (req, res) => {
     let blogId = 1
     let userId = req.body.userId
     let tags = req.body.tags
+    let visible = req.body.visible
 
     console.log('tags',tags)
 
@@ -191,11 +248,13 @@ router.get('/:_id', async (req, res) => {
             "title": title,
             "subTitle" : subTitle,
             "contentMarkup" : contentMarkup,
-            "isLargePreview" : isLargePreview,
+            "visible": visible,
             "imgDescriptor" : imgDescriptor,
             "date": date,
             "readTimeEstimate" : readTimeEstimate,
-            "tags": tags})
+            "tags": tags,
+            "metrics": {"likes" : [], "comment" : []}
+            })
         console.log(post.insertedId.toString())
         res.status(200).send({'id' : post.insertedId.toString()});
     } catch (err) {

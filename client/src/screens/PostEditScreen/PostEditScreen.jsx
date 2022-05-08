@@ -2,7 +2,6 @@ import React, {useContext, useEffect, useRef, useState,useLayoutEffect} from 're
 import PropTypes from 'prop-types';
 import Spinner from '../../components/shared/Spinner';
 import { Link,useNavigate } from 'react-router-dom';
-import MediumEditor from 'medium-editor';
 import InputFields from './components/InputFields';
 import styles from './PostEditScreen.module.scss';
 import postTextStyles from '../../components/shared/PostText/PostText.module.scss';
@@ -14,13 +13,25 @@ import { FaPlus } from 'react-icons/fa';
 import { Button,Modal,Form,} from 'react-bootstrap';
 import { CreateOutline,CodeWorkingOutline} from 'react-ionicons'
 import { ADD_SERIES } from '../../context/actionTypes';
+import { createReactEditorJS } from 'react-editor-js'
+import { EDITOR_JS_TOOLS } from "../../components/shared/Editor";
 
 const PostEditScreen = () => {
 
   const {authDispatch,authState} = useContext(GlobalContext);
-
-
-
+  const params = useParams()
+  const postId = params.postId;
+  const blogId = params.blogId;
+  const [data, setData] = useState(false);
+  const [post, setPost] = useState([]);
+  const [enableChange, setEnableChange] = useState(false);
+  const [author, setAuthor] = useState([]);
+  const [series, setSeries] = useState();
+  const [listseries, setListSeries] = useState(authState.authdata.series);
+  const [active, setActive] = useState('yo');
+  const [show, setShow] = useState(false);
+  const [tags, setTags] = React.useState([{}]);
+  const [blocks,setBlocks] = useState({});
   const [state, setState] = useState({
                                         isDataLoaded: false,
                                         formData: {
@@ -33,12 +44,9 @@ const PostEditScreen = () => {
                                     );
 
 
-
-  const [show, setShow] = useState(false);
+  const ReactEditorJS = createReactEditorJS()
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-
-  const [tags, setTags] = React.useState([{}]);
 
   const KeyCodes = {
     comma: 188,
@@ -69,16 +77,7 @@ const PostEditScreen = () => {
     console.log('The tag at index ' + index + ' was clicked');
   };
 
-  const params = useParams()
-  const postId = params.postId;
-  const blogId = params.blogId;
-  const [data, setData] = useState({});
-  const [post, setPost] = useState([]);
-  const [enableChange, setEnableChange] = useState(false);
-  const [author, setAuthor] = useState([]);
-  const [series, setSeries] = useState();
-  const [listseries, setListSeries] = useState(authState.authdata.series);
-  const [active, setActive] = useState('yo');
+
 
 
   useEffect(() => {
@@ -108,13 +107,17 @@ const PostEditScreen = () => {
           }
 
           // Filtering author to get the good one
+
           setAuthor(results[0].filter(d => d._id === authorId.userId)[0])
           setPost(results[1][0])
+          setBlocks(results[1][0]['contentMarkup'])
+          
           // handling post with no tags
+
           if (results[1][0]['tags'] == null) {
-          setTags([])
+            setTags([])
           } else {
-          setTags(results[1][0]['tags'])
+            setTags(results[1][0]['tags'])
           }
 
 
@@ -124,9 +127,7 @@ const PostEditScreen = () => {
             setActive(results[1][0]['series'])
             }
           
-          setData({
-            data: {author, post},
-          });
+          setData(true);
           setState({
             formData: results[1][0],
           });
@@ -136,41 +137,7 @@ const PostEditScreen = () => {
   }, []);
 
 
-  const editor  = new MediumEditor('.js-editable', {
-    targetBlank: true,
-    toolbar: {
-      buttons: [
-        'bold', 'italic', 'underline', 'anchor', 'h3', 'h4',
-        {
-          name: 'unorderedlist',
-          contentDefault: '<b>UL</b>',
-        },
-        {
-          name: 'orderedlist',
-          contentDefault: '<b>OL</b>',
-        },
-        'quote',
-        {
-          name: 'pre',
-          action: 'append-pre',
-          tagNames: ['pre'],
-          contentDefault: 'PRE',
-        },
-        {
-          name: 'strikethrough',
-          action: 'strikethrough',
-          tagNames: ['code'],
-          contentDefault: 'CODE',
-        },
-      ],
-    },
-    placeholder: {
-      text: '',
-      hideOnClick: false,
-    },
-  });
-
-
+  console.log('blokcs',blocks)
 
   const handleInputChange = (e) => {
     setState({
@@ -197,10 +164,9 @@ const PostEditScreen = () => {
   element.style.visibility = 'visible';
   }
 
-  const handleSaveBtnClick = () => {
+  const handleSaveBtnClick = (visible) => {
     console.log('saving',JSON.stringify({
-      ...state.formData,
-      contentMarkup: document.querySelector('.js-editable').innerHTML,
+      contentMarkup: blocks,
     }))
     fetch(`http://127.0.0.1:8080/api/post/`+ postId , {
       method: 'PATCH',
@@ -209,8 +175,9 @@ const PostEditScreen = () => {
       },
       body: JSON.stringify({
         ...state.formData,
-        contentMarkup: document.querySelector('.js-editable').innerHTML,
+        contentMarkup: blocks,
         tags : tags,
+        visible : visible
       }),
     })
       .then(() => { console.log('fuck');});
@@ -283,14 +250,17 @@ const PostEditScreen = () => {
       .then(() => { console.log('deleted');});
   }
 
-  
+  const handleOnChange = async (api) => {
+    console.log('handlechange')
+    const body = await api.saver.save();
+    setBlocks(body)
+  };
 
     if (!data) {
       return (<Spinner />);
     }
 
     const inputData = state.formData ;
-
 
     return (
       <main>
@@ -369,46 +339,48 @@ const PostEditScreen = () => {
 
 
 
-            
-
-
-
-
-
-        
-
-
         <div className={styles['post-tags']}>
           { tags ? 
-          <ReactTags
-            classNames={TagStyles['tagsClass']}
-            tags={tags}
-            // suggestions={suggestions}
-            delimiters={delimiters}
-            handleDelete={handleDelete}
-            handleAddition={handleAddition}
-            handleDrag={handleDrag}
-            handleTagClick={handleTagClick}
-            inputFieldPosition="inline"
-            autocomplete
+            <ReactTags
+              classNames={TagStyles['tagsClass']}
+              tags={tags}
+              // suggestions={suggestions}
+              delimiters={delimiters}
+              handleDelete={handleDelete}
+              handleAddition={handleAddition}
+              handleDrag={handleDrag}
+              handleTagClick={handleTagClick}
+              inputFieldPosition="inline"
+              autocomplete
             />
             :
             <div>yoooooooooooooooooo</div>
           }
         </div>
-          <InputFields
-            inputData={inputData}
-            onInputChange={handleInputChange}
-            onCheckboxChange={handleCheckboxChange}
-          />
+            <InputFields
+              inputData={inputData}
+              onInputChange={handleInputChange}
+              onCheckboxChange={handleCheckboxChange}
+            />
         </div>
-        <div className={`${postTextStyles['post-text']} js-editable`} dangerouslySetInnerHTML={{ __html: post.contentMarkup }} />
+
+        <div className={styles['post-editor-wrapper']} >
+          <div className={styles['post-editor-text']} >
+              <ReactEditorJS         
+                onChange={handleOnChange}
+                defaultValue={blocks}
+                tools={EDITOR_JS_TOOLS}
+              />
+            </div>
+        </div>
 
           {
             enableChange
               ? 
                 <div className={styles['post-actions']}>
-                  <Link  className="btn" to={`/blogs/1/posts/${post._id}`} onClick={handleSaveBtnClick}>Save</Link>
+                  <Link  className="btn" to={`/blogs/1/posts/${post._id}`} onClick={() => handleSaveBtnClick(false)}>Save Draft</Link>
+                  <Link  className="btn" to={`/blogs/1/posts/${post._id}`} onClick={() => handleSaveBtnClick(true)}>Publish</Link>
+
                   <Link className={styles.cancel} to={`/blogs/1/posts/${post._id}`}>Cancel</Link>
                   <Link className={styles.delete} to={`/`} onClick={handleDeleteBtnClick}>Delete</Link>
                 </div>

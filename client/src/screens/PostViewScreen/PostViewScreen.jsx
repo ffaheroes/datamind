@@ -14,6 +14,7 @@ import TagStyles from './../../assets/styles/TagStyles.css'
 import { WithContext as ReactTags } from 'react-tag-input';
 import { GlobalContext } from '../../context/Provider'
 import Prism from "prismjs";
+import LikeButton from '../../components/shared/LikeButton';
 
 const PostViewScreen = () => {
 
@@ -30,6 +31,7 @@ const PostViewScreen = () => {
   const [author, setAuthor] = useState([]);
   const [enableChange, setEnableChange] = useState(false);
   const [relatedSeries, setRelatedSeries] = useState([]);
+  const [liked, setLiked] = useState(false);
 
   useEffect(() => {
     async function get_posts() {
@@ -59,20 +61,35 @@ const PostViewScreen = () => {
           setRelatedSeries(results[2])
 
           // get the auhorID of the owner of the post
-          let authorId = results[1][0]
+          let thispost = results[1][0]
+          console.log('thispost',thispost)
 
-          console.log('enablechange',authorId,authState.authdata.user_id)
           if (authState.isLoggedIn) {
-            if (authorId.userId==authState.authdata.user_id){
+            console.log('auth is logged')
+            // Authorize change
+            if (thispost.userId==authState.authdata.user_id){
+              console.log('user is author')
               setEnableChange(true)
             }
+            // Set Color of Likes
+            if (thispost.metrics.like) {
+              thispost.metrics.like.map((item) => {
+                if (item.user_id==authState.authdata.user_id){
+                  console.log('auth is logged and auth already liked')
+                  setLiked(true)
+                }
+              })
+            }
+            
           }
 
           // Filtering author to get the good one
-          setAuthor(results[0].filter(d => d._id === authorId.userId)[0])
+          setAuthor(results[0].filter(d => d._id === thispost.userId)[0])
           setPost(results[1][0])
           setTags(results[1][0]['tags'])
           setAuthor(results[0])
+
+
           setData(true);
           console.log(author)
         });
@@ -119,13 +136,75 @@ const PostViewScreen = () => {
     window.location.reload()
   }
 
+  const handleLikedChange = (e) => {
 
-  console.log('Related Series',relatedSeries)
-  
-  // useEffect(() => {
-  //   Prism.highlightAll()
-  // }, []);
-  
+
+
+
+    
+    if (!liked) {
+
+      console.log(post.metrics.like)
+      if (!post.metrics.like){
+        var list_like = [{user_id : authState.authdata.user_id, username: authState.authdata.username,timestamps : new Date()}]
+      } else {
+        var list_like = [...post.metrics.like,{user_id : authState.authdata.user_id, username: authState.authdata.username,timestamps : new Date()}]
+      }
+
+    console.log('patch query',list_like)
+    fetch(`http://127.0.0.1:8080/api/post/like/`+ postId , {
+      method: 'PATCH',
+      headers: {'Content-Type': 'application/json',},
+      body: JSON.stringify( {comment : post.metrics.comment,
+        like : list_like
+      }),
+    })
+    .then(() => { console.log('series');});
+
+
+    setPost({
+      ...post,
+      metrics : { comment : post.metrics.comment,
+                  like : list_like
+                }
+     });
+
+  } else {
+    if (authState.isLoggedIn) {   // USER IS LOGGED
+      post.metrics.like.map((item) => { 
+        console.log('map item',item) // CHECK IF USER CURENTLY LOGGED IS IN LIST OF LIKES
+        if (item.user_id==authState.authdata.user_id){ // USER IS LIST OF LIKES
+          console.log('user Unlike, rest = ',post.metrics.like.filter((it)=> it.username !==authState.authdata.username ))
+          fetch(`http://127.0.0.1:8080/api/post/like/`+ postId , { // POST QUERY TON UNLIKE/REMOVE THE USER
+            method: 'PATCH',
+            headers: {'Content-Type': 'application/json',},
+            body: JSON.stringify( {comment : post.metrics.comment,
+              like : post.metrics.like.filter((it)=> it.username !==authState.authdata.username )
+            }),
+          })
+          .then(() => { console.log('series');});
+
+          setPost({
+            ...post,
+            metrics : { comment : post.metrics.comment,
+                        like : post.metrics.like.filter((it)=> it.username !==authState.authdata.username )
+                      }
+           });
+
+
+        }
+      })
+    }
+  }
+
+
+   setLiked(!liked)
+
+
+  }
+
+  console.log('post',post)
+
   if (!data) {
     return (<Spinner />);
   }
@@ -144,8 +223,13 @@ const PostViewScreen = () => {
             :
             <div></div>
           }
-            <PostImage post={post} />
-            <PostText post={post} />
+            <PostImage post={post}/>
+            <PostText post={post}/>
+
+            <LikeButton liked={liked} 
+                        onLikedChange={handleLikedChange}/>
+
+
         </div>
 
         <div className={styles['sidebar']}>
@@ -156,9 +240,11 @@ const PostViewScreen = () => {
             </a>
             <div className={styles.text}>
               <div className={styles.title}>
-                <a href="https://blog.kentcdodds.com/@kentcdodds" target="_blank" rel="noopener noreferrer">
-                  {author.filter(d => d._id === post.userId)[0].username}
-                </a>
+
+              <Link to={`/blogs/${author.filter(d => d._id === post.userId)[0].username}`}>
+              <div>{author.filter(d => d._id === post.userId)[0].username}</div>
+              </Link>
+
                 <button className={`btn btn--smallest ${styles.follow}`}>Follow</button>
               </div>
               <div className={styles.descr}>{author.filter(d => d._id === post.userId)[0].bio}</div>

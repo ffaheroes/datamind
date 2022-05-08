@@ -1,16 +1,16 @@
 import React, { useEffect,useContext,useState } from 'react';
-import PropTypes from 'prop-types';
+import { GlobalContext} from '../../../../context/Provider';
+import { Link } from 'react-router-dom';
 import styles from './ProfileHeader.module.scss';
 import { CreateOutline,SaveOutline,LogoGithub,LogoGitlab,LogoLinkedin,LogoMedium} from 'react-ionicons'
-import { GlobalContext} from '../../../../context/Provider';
-import Button from '@mui/material/Button'
+
 
 const ProfileHeader = ({ author }) => {
 
   const {authDispatch,authState} = useContext(GlobalContext);
   const [enableChange, setEnableChange] = useState(false);
   const [editView, setEditView] = useState(false);
-  console.log(author)
+  console.log('profile header',author)
   const [state, setState] = useState({
                                         bio: author.bio,
                                         github: author.links ? author.links.github : '' ,
@@ -21,6 +21,7 @@ const ProfileHeader = ({ author }) => {
                                     );
 
 
+  console.log('state',state);
 
   const handleInputChange = (e) => {
     setState({
@@ -48,15 +49,6 @@ const ProfileHeader = ({ author }) => {
         allelements[i].lastChild.style.visibility = 'hidden';
       }
     }
-
-    // var element = document.getElementById(target + '_input');
-    // if (element.style.display ==='none'){
-    //   element.style.display = 'block';
-    //   element.style.visibility = 'visible';
-    // } else {
-    //   element.style.display = 'none';
-    //   element.style.visibility = 'hidden';
-    // }
   }
 
   
@@ -107,15 +99,17 @@ const ProfileHeader = ({ author }) => {
       <a className="avatar avatar--big avatar--circled" href="https://blog.kentcdodds.com/@kentcdodds" target="_blank" rel="noopener noreferrer">
         <img src={author.avatarUrl} />
       </a>
-
           {
           editView
           ? 
               <div className={styles.text}>
                 <div className={styles.title}>
-                  <a href="https://blog.kentcdodds.com/@kentcdodds" target="_blank" rel="noopener noreferrer">
-                    {author.username}
-                  </a>
+
+                  <Link to={`/blogs/${author.username}`}>
+                        <div>{author.username}</div>
+                  </Link>
+
+
                 </div>
                 <input type="text" className={styles.input}  value={state.bio} onChange={handleInputChange} name="bio" placeholder={author.bio ? author.bio : 'About me' } />
                 
@@ -169,9 +163,9 @@ const ProfileHeader = ({ author }) => {
           : 
               <div className={styles.text}>
               <div className={styles.title}>
-                <a href="https://blog.kentcdodds.com/@kentcdodds" target="_blank" rel="noopener noreferrer">
-                  {author.username}
-                </a>
+              <Link to={`/blogs/${author.username}`}>
+                        <div>{author.username}</div>
+                  </Link>
               </div>
               <div className={styles.descr}>{state.bio}</div>
               <div className={styles.links}>

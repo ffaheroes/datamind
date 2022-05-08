@@ -15,9 +15,9 @@ const PostPreview2 = ({ post, author }) => (
             <img src={author.avatarUrl} />
           </a>
           <div className={styles.title}>
-            <a href="https://blog.kentcdodds.com/@kentcdodds" target="_blank" rel="noopener noreferrer">
-              {author.username}
-            </a>
+            <Link to={`/blogs/${author.username}`}>
+            <div>{author.username}</div>
+            </Link>
           </div>
           <div className={styles.meta}>
           · {post.date} · {post.readTimeEstimate}

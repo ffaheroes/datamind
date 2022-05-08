@@ -5,7 +5,7 @@ import { LogoGithub,LogoMedium,LogoLinkedin } from 'react-ionicons'
 const Footing = () => (
   <div className={styles.footing}>
     <div className={styles.inner}>
-      <LogoLinkedin
+      {/* <LogoLinkedin
         color={'#00000'} 
         height="35px"
         width="35px"
@@ -19,7 +19,7 @@ const Footing = () => (
         color={'#00000'}
         height="35px"
         width="35px"
-      />
+      /> */}
     </div>
 </div>
 );

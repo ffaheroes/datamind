@@ -1,0 +1,77 @@
+
+.like-button-circle{
+    border-radius: 50%;
+    height : 40px;
+    width : 40px;
+    will-change: background-color;
+    transition: background-color 0.3s, transform 0.3s;
+    background-color: white;
+    box-shadow: 0 0 5px grey;
+    border : 1px solid black;
+    position : relative;
+}
+
+.like-button-circle-liked{
+    border-radius: 50%;
+    height : 40px;
+    width : 40px;
+    will-change: background-color;
+    transition: background-color 0.3s, transform 0.3s;
+    background-color: crimson;
+    box-shadow: 0 0 5px grey;
+    border : 1px solid black;
+    position : relative;
+
+}
+
+
+  .like-button-icon{
+      display:flex;
+      justify-content: center;
+      align-items: center;
+  }
+
+  .like-button-icon-liked{
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+
+
+.like-button-wrapper {
+    &::before {
+      content: "";
+      z-index: 1;
+    //   position: absolute;
+    //   left: 0;
+    //   right: 0;
+    //   top: 0;
+    //   bottom: 0;
+    //   border : 1px red solid;
+    //   will-change: background-color;
+    //   transition: background-color 0.3s, transform 0.3s;
+    //   background-color: darkblue;
+    //   box-shadow: 0 0 10px darkcyan;
+      border-radius: 50%;
+    //   border: 1px solid red;
+    }
+    
+    // &.liked {
+    //   &::before {
+    //     background-color: red;
+    //   }
+    // }
+    
+    .suffix {
+      opacity: 0;
+      transition: opacity 300ms, transform 300ms;
+      transform: translateX(15px);
+  
+      &.liked {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+  }

@@ -9,21 +9,16 @@
 
   .input {
     color: var(--color-font-secondary);
-    max-height: 40px;
     max-width: 450px;
     margin: 5px;
-    // overflow: hidden;
-    // text-overflow: ellipsis;
-
     border-width: 0 0 1px;
     border-color: blue
-    // display: -webkit-box;
-    // -webkit-line-clamp: 2;
-    // -webkit-box-orient: vertical;
   }
   .span {
     margin-right : 5px;
   }
+
+
 
   .links {
     display: flex;

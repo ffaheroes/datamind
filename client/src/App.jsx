@@ -5,7 +5,6 @@ import './assets/styles/index.scss';
 import Loadable from 'react-loadable';
 import Spinner from './components/shared/Spinner';
 import Header from './components/shared/Header';
-import { ContextWrapper, withContext } from './utils/context';
 import GlobalProvider from './context/Provider';
 import { GlobalContext } from '../src/context/Provider'
 

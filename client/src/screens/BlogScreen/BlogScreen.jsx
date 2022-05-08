@@ -93,7 +93,7 @@ const BlogScreen = () => {
             'Accept': 'application/json'
            }
         }).then((response) => response.json()),
-        fetch(`http://127.0.0.1:8080/api/post`, {
+        fetch(`http://127.0.0.1:8080/api/post/livepost`, {
           headers : { 
             'Content-Type': 'application/json',
             'Accept': 'application/json'
@@ -223,7 +223,7 @@ const BlogScreen = () => {
 
             
 
-            <Footing />
+            {/* <Footing /> */}
       </main>
     );
 }

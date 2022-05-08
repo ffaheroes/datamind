@@ -128,18 +128,9 @@ const ProfileScreen = () => {
         });
     }
     get_posts()
+    console.log('getpostdone')
   }, []);
 
-
-  const code = `const App = props => {
-    return (
-      <div>
-        <h1> React App </h1>
-        <div>Awesome code</div>
-      </div>
-    );
-  };
-  `;
 
   if (!data) {
     return (<Spinner />);
@@ -148,8 +139,7 @@ const ProfileScreen = () => {
   return (
       <main>
 
-          
-
+  
             <div className={styles['main-container']}>
               <div className={styles['posts']}>
               <ProfileHeader author={author} />

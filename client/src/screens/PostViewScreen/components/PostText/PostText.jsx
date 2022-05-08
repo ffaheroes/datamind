@@ -1,41 +1,20 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import postTextStyles from './PostText.module.scss';
-import Prism from "prismjs";
-import Code from '../../../../components/shared/Code';
-import parse from 'html-react-parser';
-import JsxParser from 'react-jsx-parser'
-import Highlight from 'react-highlight'
+import { createReactEditorJS } from 'react-editor-js'
+import { EDITOR_JS_TOOLS } from "../../../../components/shared/Editor";
 
-const code = `const App = props => {
-  return (
-    <div>
-      <h1> React App </h1>
-      <div>Awesome code</div>
-    </div>
-  );
-};
-`;
+const ReactEditorJS = createReactEditorJS()
 
 const PostText = ({ post }) => (
 
   <div className={postTextStyles['post-text']}>
-    {/* <h1 className={postTextStyles.title}>{post.title}</h1>
-    <p><em>{post.subTitle}</em></p> */}
-    <div style={{ display: 'contents' }} dangerouslySetInnerHTML={{ __html:post.contentMarkup}} />
-    
-
-    {/* {parse(post.contentMarkup)}
-
-    <Highlight className='language-javascript'>
-      {post.contentMarkup}
-    </Highlight>
-
-
-    <JsxParser
-    components={{Code,Highlight}}
-    jsx={post.contentMarkup}
-  /> */}
+      <div>
+                <ReactEditorJS
+                  defaultValue={post.contentMarkup}
+                  tools={EDITOR_JS_TOOLS}
+                  readOnly={true}
+                />
+      </div>
 
   </div>
 );

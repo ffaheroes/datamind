@@ -33,6 +33,9 @@ app.use('/api/blog', BlogRoute);
 const AuthRoute = require('./routes/auth')
 app.use('/api/auth', AuthRoute);
 
+const ImageRoute = require('./routes/image')
+app.use('/api/image', ImageRoute);
+
 app.get('/', async (req,res) => {
     console.log('get')
     // const id = parseInt(req.params.id)
